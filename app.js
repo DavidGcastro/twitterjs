@@ -1,9 +1,13 @@
+//require in Express 
 var express = require("express");
+//require in nunjucks templating
 var nunjucks = require('nunjucks')
+//initialize an instance of express
 const app = express();
-
+//require in routes in our routes/index.js file, remember express using this file name as the default
 const routes = require('./routes');
-//in some file that is in the root directory of our application...how about app.js ?
+
+//the context for our templating system
 var locals = {
     title: 'An Example',
     people: [
@@ -21,12 +25,17 @@ var locals = {
 nunjucks.configure('views', {
     noCache: true
 });
+
 nunjucks.render('index.html', locals, function (err, output) {
-    console.log(output);
+    //    console.log(output);
 });
+
 app.set('view engine', 'html'); // have res.render work with html files
+
 app.engine('html', nunjucks.render); // when giving html files to res.render, tell it to use nunjucks
+
 nunjucks.configure('views'); // point nunjucks to the proper directory for templates
+
 nunjucks.configure('views', {
     noCache: true
 })

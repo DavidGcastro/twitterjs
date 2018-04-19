@@ -11,6 +11,7 @@ function add(name, content) {
 
 function list() {
     return _.cloneDeep(data);
+
 }
 
 function find(properties) {
