@@ -1,5 +1,58 @@
+//require in Express 
+var express = require("express");
+//require in nunjucks templating
+var nunjucks = require('nunjucks')
+//initialize an instance of express
+const app = express();
+//require in routes in our routes/index.js file, remember express using this file name as the default
+const routes = require('./routes');
 
-////===============================================================================
+//the context for our templating system, passed in as the second parameter in render. 
+var locals = {
+    title: 'An Example',
+    people: [
+        {
+            name: 'Gandalf'
+         },
+        {
+            name: 'Frodo'
+         },
+        {
+            name: 'Hermione'
+         }
+     ]
+};
+
+//where our templates are, and some additional options. 
+nunjucks.configure('views', {
+    noCache: true
+});
+
+//nunjucks.render(name, [context], [callback])
+nunjucks.render('index.html', locals, function (err, output) {
+    //    console.log(output);
+});
+
+
+
+app.set('view engine', 'html'); // have res.render work with html files
+
+//app.engine('html', require('ejs').renderFile);
+app.engine('html', nunjucks.render); // when giving html files to res.render, tell it to use nunjucks
+
+//allows us to have a folder of files become public. Provides routes for every specific file.
+app.use(express.static('public'))
+
+//when we hit this url, use what we stored in in the routes variable above. 
+app.use('/', routes);
+
+//listen on port 30000
+app.listen(3000, () => console.log('Example app listening on port 3000!'))
+
+
+//===============================================================================
+//NOTES
+//===============================================================================
 ////lets our server listen on port 3000
 //// under the hood using node's native http handler
 ////express is built on top of it
@@ -62,72 +115,9 @@
 //
 //
 ////AFTER OUR ROUTES DO THIS
-//
+//******************************
 //app.use(function (req, res) {
 //    console.log("response: ", res.statusCode);
 //})
 //
 //
-
-
-
-//require in Express 
-var express = require("express");
-//require in nunjucks templating
-var nunjucks = require('nunjucks')
-//initialize an instance of express
-const app = express();
-//require in routes in our routes/index.js file, remember express using this file name as the default
-const routes = require('./routes');
-
-//the context for our templating system
-var locals = {
-    title: 'An Example',
-    people: [
-        {
-            name: 'Gandalf'
-         },
-        {
-            name: 'Frodo'
-         },
-        {
-            name: 'Hermione'
-         }
-     ]
-};
-nunjucks.configure('views', {
-    noCache: true
-});
-
-nunjucks.render('index.html', locals, function (err, output) {
-    //    console.log(output);
-});
-
-app.set('view engine', 'html'); // have res.render work with html files
-
-app.engine('html', nunjucks.render); // when giving html files to res.render, tell it to use nunjucks
-
-nunjucks.configure('views'); // point nunjucks to the proper directory for templates
-
-nunjucks.configure('views', {
-    noCache: true
-})
-
-//run this everytime
-app.use(function (req, res, next) {
-    // do your logging here
-    console.log("logs for every page")
-    next()
-})
-
-
-app.use(express.static('public')) 
-//allows us to have a folder of files become public. Provides routes for every specific file.
-
-app.use('/', routes);
-
-//listen on port 30000
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
-
-
-
